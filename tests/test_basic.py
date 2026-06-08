@@ -3,8 +3,8 @@ Basic test to verify that we can pass a temporary vault to the indexer.
 This is a placeholder test for now.
 """
 import tempfile
-import os
 from pathlib import Path
+
 
 def test_temp_vault_creation():
     """Test that we can create and use a temporary vault directory."""
