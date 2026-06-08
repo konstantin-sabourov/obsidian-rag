@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import subprocess
 import sys
-from typing import Optional
 
 import typer
 from loguru import logger
@@ -28,7 +27,11 @@ console = Console()
 
 def _setup_logging(level: str = "INFO") -> None:
     logger.remove()
-    logger.add(sys.stderr, level=level, format="<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}")
+    logger.add(
+        sys.stderr,
+        level=level,
+        format="<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}",
+    )
 
 
 def _print_answer(response, show_sources: bool = True) -> None:
@@ -56,7 +59,11 @@ def index(
     if force:
         rprint("[yellow]--force: re-embedding all notes[/yellow]")
 
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
         task = progress.add_task("Indexing vault...", total=None)
         summary = index_vault(force=force, settings=settings)
         progress.update(task, completed=True)
@@ -72,7 +79,7 @@ def index(
 @app.command()
 def query(
     question: str = typer.Argument(..., help="Your question"),
-    top_k: Optional[int] = typer.Option(None, "--top-k", "-k", help="Number of chunks to retrieve"),
+    top_k: int | None = typer.Option(None, "--top-k", "-k", help="Number of chunks to retrieve"),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Single-shot question answering over your vault."""
@@ -83,7 +90,11 @@ def query(
     settings = get_settings()
     _setup_logging("DEBUG" if verbose else settings.logging.level)
 
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as p:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as p:
         t = p.add_task("Retrieving...", total=None)
         chunks = retrieve(question, top_k=top_k, settings=settings)
         p.update(t, description="Generating answer...")
@@ -95,7 +106,7 @@ def query(
 
 @app.command()
 def chat(
-    top_k: Optional[int] = typer.Option(None, "--top-k", "-k"),
+    top_k: int | None = typer.Option(None, "--top-k", "-k"),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Interactive chat session with conversation history."""
@@ -132,7 +143,12 @@ def chat(
             rprint("[dim]History cleared.[/dim]")
             continue
 
-        with Progress(SpinnerColumn(), TextColumn("Thinking..."), console=console, transient=True) as p:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("Thinking..."),
+            console=console,
+            transient=True,
+        ) as p:
             p.add_task("", total=None)
             chunks = retrieve(user_input, top_k=top_k, settings=settings)
             response = generate(user_input, chunks, conversation_history=history, settings=settings)
@@ -172,7 +188,7 @@ def status() -> None:
     except FileNotFoundError:
         rprint("[red]ollama not found in PATH[/red]")
 
-    rprint(f"\n[bold]Config:[/bold]")
+    rprint("\n[bold]Config:[/bold]")
     rprint(f"  Embedding model: {settings.embedding.model}")
     rprint(f"  LLM model:       {settings.llm.model}")
     rprint(f"  Vault:           {settings.vault_path}")
@@ -182,7 +198,7 @@ def status() -> None:
 @app.command()
 def inspect(
     query_text: str = typer.Argument(..., help="Query to inspect retrieval for"),
-    top_k: Optional[int] = typer.Option(None, "--top-k", "-k"),
+    top_k: int | None = typer.Option(None, "--top-k", "-k"),
 ) -> None:
     """Show retrieved chunks for a query without calling the LLM."""
     from .config import get_settings

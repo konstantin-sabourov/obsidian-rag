@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
 
 import yaml
 from pydantic import Field, field_validator
@@ -41,7 +40,7 @@ class RetrievalConfig(BaseSettings):
     chunk_size: int = 512
     chunk_overlap: int = 64
     metadata_fields: list[str] = ["tags", "aliases", "created", "modified"]
-    reranker: Optional[str] = None
+    reranker: str | None = None
 
 
 class LoggingConfig(BaseSettings):
@@ -65,8 +64,8 @@ class Settings(BaseSettings):
     obsidian_api_key: str = ""
 
     # Allow env override of model names
-    embedding_model: Optional[str] = None
-    llm_model: Optional[str] = None
+    embedding_model: str | None = None
+    llm_model: str | None = None
 
     # Nested config (populated from yaml in get_settings)
     embedding: EmbeddingConfig = Field(default_factory=EmbeddingConfig)

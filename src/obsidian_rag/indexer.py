@@ -13,11 +13,10 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
-from typing import Optional
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
-from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
+from llama_index.core import SimpleDirectoryReader
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import Document, TextNode
 from llama_index.embeddings.ollama import OllamaEmbedding
@@ -83,7 +82,9 @@ def _get_chroma_collection(settings: Settings) -> chromadb.Collection:
 
 
 def _get_embedding_model(settings: Settings) -> OllamaEmbedding:
-    logger.info(f"Embedding model: {settings.embedding.model} @ {settings.embedding.ollama_base_url}")
+    logger.info(
+        f"Embedding model: {settings.embedding.model} @ {settings.embedding.ollama_base_url}"
+    )
     return OllamaEmbedding(
         model_name=settings.embedding.model,
         base_url=settings.embedding.ollama_base_url,
@@ -105,7 +106,7 @@ def _get_existing_ids(collection: chromadb.Collection) -> set[str]:
     return set(result["ids"])
 
 
-def index_vault(force: bool = False, settings: Optional[Settings] = None) -> dict:
+def index_vault(force: bool = False, settings: Settings | None = None) -> dict:
     """
     Main entry point. Indexes (or re-indexes) the vault.
 
@@ -151,7 +152,7 @@ def index_vault(force: bool = False, settings: Optional[Settings] = None) -> dic
     return summary
 
 
-def collection_stats(settings: Optional[Settings] = None) -> dict:
+def collection_stats(settings: Settings | None = None) -> dict:
     if settings is None:
         settings = get_settings()
     collection = _get_chroma_collection(settings)

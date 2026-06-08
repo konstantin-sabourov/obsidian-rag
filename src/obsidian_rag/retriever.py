@@ -6,7 +6,6 @@ retrieve() → list of RetrievedChunk (text + metadata + score)
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
@@ -31,7 +30,7 @@ class RetrievedChunk:
         return self.note_title or self.file_path or "unknown"
 
 
-def _parse_csv_field(val: Optional[str]) -> list[str]:
+def _parse_csv_field(val: str | None) -> list[str]:
     if not val:
         return []
     return [v.strip() for v in val.split(",") if v.strip()]
@@ -39,8 +38,8 @@ def _parse_csv_field(val: Optional[str]) -> list[str]:
 
 def retrieve(
     query: str,
-    top_k: Optional[int] = None,
-    settings: Optional[Settings] = None,
+    top_k: int | None = None,
+    settings: Settings | None = None,
 ) -> list[RetrievedChunk]:
     """
     Embed query with nomic-embed-text, retrieve top-k chunks from ChromaDB.
@@ -98,5 +97,9 @@ def retrieve(
             metadata=meta,
         ))
 
-    logger.debug(f"Retrieved {len(chunks)} chunks, top score: {chunks[0].score:.3f}" if chunks else "No chunks retrieved")
+    logger.debug(
+        f"Retrieved {len(chunks)} chunks, top score: {chunks[0].score:.3f}"
+        if chunks
+        else "No chunks retrieved"
+    )
     return chunks

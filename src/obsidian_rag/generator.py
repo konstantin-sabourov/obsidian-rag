@@ -6,10 +6,9 @@ Returns answer text + list of cited source notes.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
-from llama_index.llms.ollama import Ollama
 from llama_index.core.base.llms.types import ChatMessage
+from llama_index.llms.ollama import Ollama
 from loguru import logger
 
 from .config import Settings, get_settings
@@ -70,8 +69,8 @@ def _dedupe_sources(chunks: list[RetrievedChunk]) -> list[str]:
 def generate(
     query: str,
     chunks: list[RetrievedChunk],
-    conversation_history: Optional[list[dict]] = None,
-    settings: Optional[Settings] = None,
+    conversation_history: list[dict] | None = None,
+    settings: Settings | None = None,
 ) -> GeneratorResponse:
     """
     Generate an answer from retrieved chunks.
