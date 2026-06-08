@@ -1,0 +1,33 @@
+embedding:
+  model: nomic-embed-text
+  ollama_base_url: http://localhost:11434
+
+llm:
+  # Options on M4 Max 64GB:
+  #   mistral-nemo          — fast, good for dev/iteration
+  #   qwen2.5:32b           — daily driver, best quality/speed balance
+  #   llama3.3:70b-instruct-q4_K_M  — best quality, ~40GB, slower
+  model: mistral-nemo # qwen2.5:32b
+  ollama_base_url: http://localhost:11434
+  temperature: 0.1
+  context_window: 8192
+  request_timeout: 120.0
+
+retrieval:
+  top_k: 6                   # chunks retrieved per query
+  chunk_size: 512            # tokens per chunk
+  chunk_overlap: 64          # overlap between chunks
+  # Metadata fields to extract from frontmatter and preserve with each chunk
+  metadata_fields:
+    - tags
+    - aliases
+    - created
+    - modified
+  # Optional cross-encoder reranker (Ollama model). Leave null to disable.
+  reranker: null
+  # reranker: bge-reranker-v2-m3
+
+logging:
+  show_model_on_query: true  # log embedding + LLM model name on every query
+  show_sources: true         # include source note citations in output
+  level: INFO

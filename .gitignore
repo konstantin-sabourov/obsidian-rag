@@ -1,0 +1,21 @@
+# Environment
+.env
+
+# Vector store — local only, never commit
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# uv
+.venv/
+
+# macOS
+.DS_Store
