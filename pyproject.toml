@@ -19,6 +19,7 @@ dependencies = [
     "rich>=13.0",
     # Logging
     "loguru>=0.7",
+    "pytest>=9.0.3",
 ]
 
 [project.scripts]
